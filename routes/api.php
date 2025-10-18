@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\PostController;
-use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 Route::post("/login", [AuthController::class, "login"]);
