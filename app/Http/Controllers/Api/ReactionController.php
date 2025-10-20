@@ -40,8 +40,8 @@ class ReactionController extends Controller
 
     public function summary(Post $post)
     {
-        $likes = $post->reactions()->wherePivot('reaction', 'like')->count();
-        $dislikes = $post->reactions()->wherePivot('reaction', 'dislike')->count();
+        $likes = $post->reactions()->wherePivot('reaction', '=', 'like')->count();
+        $dislikes = $post->reactions()->wherePivot('reaction', '=', 'dislike')->count();
 
         return response()->json(['likes' => $likes, 'dislikes' => $dislikes]);
     }

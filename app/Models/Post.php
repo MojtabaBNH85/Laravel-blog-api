@@ -21,7 +21,7 @@ class Post extends Model
     }
 
     public function reactions(){
-        $this->belongsToMany(User::class, 'post_user_reactions')
+        return $this->belongsToMany(User::class, 'post_user_reactions')
             ->withPivot('reaction')
             ->withTimestamps();
     }
