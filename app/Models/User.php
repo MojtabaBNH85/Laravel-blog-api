@@ -57,4 +57,10 @@ class User extends Authenticatable
     public function comments(): HasMany{
         return  $this->hasMany(Comment::class);
     }
+
+    public function reactedPosts(){
+        return $this->belongsToMany(Post::class , 'post_user_reactions')
+            ->withPivot('reaction')
+            ->withTimestamps();
+    }
 }
