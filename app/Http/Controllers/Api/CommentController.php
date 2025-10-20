@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -52,9 +54,7 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        if (auth()->id() !== $comment->user_id){
-            return response()->json(['message' => 'Access denied'], 403);
-        }
+        $this->authorize('update', $comment);
 
         $validated = $request->validate([
             'body' => 'required|string|max:255'
@@ -71,9 +71,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        if (auth()->id() !== $comment->user_id){
-            return response()->json(['message' => 'Access denied'], 403);
-        }
+        $this->authorize('delete', $comment);
 
         $comment->delete();
         return response()->json(['message' => 'Comment deleted successfully.'], 200);
