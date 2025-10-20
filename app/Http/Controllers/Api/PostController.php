@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -48,9 +50,8 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        if ($post->user_id !== auth()->id()) {
-                return response()->json(['message' => 'Access denied'], 401);
-        }
+        $this->authorize('update', $post);
+
         $request->validate([
             'title' => 'required|string|min:3',
             'content' => 'required|string'
@@ -70,9 +71,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if ($post->user_id !== auth()->id()) {
-            return response()->json(['message' => 'Access denied'], 401);
-        }
+        $this->authorize('delete', $post);
+
         $post->delete();
         return response()->json(['message' => 'Post deleted successfully.'], 200);
     }
