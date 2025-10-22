@@ -41,12 +41,20 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'content' => 'required'
+            'content' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+        $path = null;
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('images', 'public');
+        }
+
         $post = Post::create([
            "user_id" => auth()->id(),
            "title" => $request["title"],
-           "content" => $request["content"]
+           "content" => $request["content"],
+           "image" => $path,
         ]);
 
         return response()->json(['post' => $post, 'message' => 'Post created successfully.'], 200);

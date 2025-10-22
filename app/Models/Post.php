@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Post extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'title', 'content'];
-
+    protected $fillable = ['user_id', 'title', 'content' , 'image'];
+    protected $appends = ['image_url'];
     public function user(): belongsTo{
         return $this->belongsTo(User::class);
     }
@@ -24,5 +24,11 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'post_user_reactions')
             ->withPivot('reaction')
             ->withTimestamps();
+    }
+
+    public function getImageUrlAttribute(){
+        return $this->image
+            ? asset('storage/' . $this->image)
+            : null;
     }
 }
