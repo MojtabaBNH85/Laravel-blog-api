@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -75,17 +76,24 @@ class PostController extends Controller
     {
         $this->authorize('update', $post);
 
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|min:3',
-            'content' => 'required|string'
+            'content' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $UpdatedPost = $post->update([
-           'title' => $request["title"],
-           'content' => $request["content"]
-        ]);
 
-        return response()->json(['post' => $UpdatedPost, 'message' => 'Post updated successfully.'], 200);
+        if ($request->hasFile('image')) {
+            if ($post->image){
+                Storage::disk('public')->delete($post->image);
+            }
+
+            $validated['image'] = $request->file('image')->store('images', 'public');
+        }
+
+        $post->update($validated);
+
+        return response()->json(['post' => $post->fresh(), 'message' => 'Post updated successfully.'], 200);
 
     }
 
@@ -95,6 +103,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $this->authorize('delete', $post);
+
+        if ($post->image){
+            Storage::disk('public')->delete($post->image);
+        }
 
         $post->delete();
         return response()->json(['message' => 'Post deleted successfully.'], 200);
