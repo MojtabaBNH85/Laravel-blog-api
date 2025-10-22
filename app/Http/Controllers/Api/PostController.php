@@ -13,9 +13,24 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with("user:id,name")->latest()->get();
+        $query = Post::query()->with('user');
+
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+               $q->where('title', 'like', '%' . $search . '%')
+                   ->orWhere('content', 'like', '%' . $search . '%');
+            });
+        }
+
+        $posts =$query->latest()->paginate(10);
+        if ($posts->isEmpty() && $search) {
+            return response()->json([
+                'massage' => 'No posts found',
+                'data' => []
+            ] , 404);
+        }
         return response()->json(['posts' => $posts , 'message' => 'Posts received successfully.'], 200);
     }
 
