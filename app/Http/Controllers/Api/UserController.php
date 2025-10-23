@@ -59,7 +59,7 @@ class UserController extends Controller
         $user = $request->user();
 
         if(!$user->avatar){
-            return response()->json(['message' => 'User doesn\'t have avatar'],403);
+            return response()->json(['message' => 'User doesn\'t have avatar'],404);
         }
         Storage::disk('public')->delete($user->avatar);
         $user->update(['avatar' => null]);
