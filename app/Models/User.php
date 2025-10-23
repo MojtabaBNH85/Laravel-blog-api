@@ -36,6 +36,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = ['avatar'];
     /**
      * Get the attributes that should be cast.
      *
@@ -62,5 +63,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Post::class , 'post_user_reactions')
             ->withPivot('reaction')
             ->withTimestamps();
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
     }
 }
