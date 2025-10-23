@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +25,7 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('api_token')->plainTextToken;
-        return response()->json(['user' => $user , 'token' => $token , 'massage' => 'login success']);
+        return response()->json(['user' => new UserResource($user) , 'token' => $token , 'massage' => 'login success']);
     }
 
     public function login(Request $request)
@@ -42,7 +43,7 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('api_token')->plainTextToken;
-        return response()->json(['user' => $user , 'token' => $token , 'massage' => 'login success']);
+        return response()->json(['user' => new UserResource($user) , 'token' => $token , 'massage' => 'login success']);
     }
 
     public function logout(Request $request)

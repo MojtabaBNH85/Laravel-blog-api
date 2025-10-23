@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    public function show(Request $request)
+    public function show(Request $request )
     {
-        $user = $request->user()->loadCount('posts');
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($request->user()->loadCount('posts')),
             'message' => 'User received successfully'
         ]);
     }
@@ -38,7 +38,7 @@ class UserController extends Controller
         $user->update($validate);
 
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($user),
             'message' => 'User updated successfully'
         ]);
     }
@@ -64,7 +64,7 @@ class UserController extends Controller
         Storage::disk('public')->delete($user->avatar);
         $user->update(['avatar' => null]);
         return response()->json([
-            'user' => $user->fresh(),
+            'user' => new UserResource($user->fresh()),
             'message' => 'User avatar deleted successfully'
         ]);
 

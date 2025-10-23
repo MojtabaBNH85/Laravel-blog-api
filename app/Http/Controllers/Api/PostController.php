@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\PostResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
@@ -32,7 +33,7 @@ class PostController extends Controller
                 'data' => []
             ] , 404);
         }
-        return response()->json(['posts' => $posts , 'message' => 'Posts received successfully.'], 200);
+        return response()->json(['posts' => PostResource::collection($posts) , 'message' => 'Posts received successfully.'], 200);
     }
 
     /**
@@ -58,7 +59,7 @@ class PostController extends Controller
            "image" => $path,
         ]);
 
-        return response()->json(['post' => $post, 'message' => 'Post created successfully.'], 200);
+        return response()->json(['post' => new PostResource($post), 'message' => 'Post created successfully.'], 200);
     }
 
     /**
@@ -66,7 +67,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return response()->json(['post' => $post, 'message' => 'Post received successfully.'], 200);
+        return response()->json(['post' => new PostResource($post), 'message' => 'Post received successfully.'], 200);
     }
 
     /**
@@ -93,7 +94,7 @@ class PostController extends Controller
 
         $post->update($validated);
 
-        return response()->json(['post' => $post->fresh(), 'message' => 'Post updated successfully.'], 200);
+        return response()->json(['post' => new PostResource($post->fresh()), 'message' => 'Post updated successfully.'], 200);
 
     }
 

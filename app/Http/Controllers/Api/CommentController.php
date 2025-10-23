@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\CommentResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
@@ -17,7 +18,7 @@ class CommentController extends Controller
     public function index(Post $post)
     {
         return response()->json([
-            'comments' => $post->comments()->with('user:id,name')->latest()->get(),
+            'comments' => CommentResource::collection($post->comments->load('user')),
             'message' => 'Comments retrieved successfully'
         ] , 200);
     }
@@ -35,7 +36,7 @@ class CommentController extends Controller
         ]);
 
 
-        return response()->json(['comment' => $comment , 'message' => 'Comment successfully posted.'], 201);
+        return response()->json(['comment' => new CommentResource($comment->load('user')) , 'message' => 'Comment successfully posted.'], 201);
     }
 
     /**
@@ -44,7 +45,7 @@ class CommentController extends Controller
     public function show(Comment $comment)
     {
         return response()->json([
-            'comments' =>$comment->with('user:id,name')->latest()->get(),
+            'comments' => new CommentResource($comment->load('user')),
             'message' => 'Comment retrieved successfully'
         ] , 200);
     }
@@ -62,7 +63,7 @@ class CommentController extends Controller
 
         $UpdatedComment = $comment->update($validated);
 
-        return response()->json(['comment' => $UpdatedComment , 'message' => 'Comment updated successfully.'], 200);
+        return response()->json(['comment' => new CommentResource($UpdatedComment->load('user')) , 'message' => 'Comment updated successfully.'], 200);
 
     }
 
