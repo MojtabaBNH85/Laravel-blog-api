@@ -17,7 +17,15 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::query()->with('user');
+        $query = Post::with('user')
+            ->withCount([
+                'reactions as likes' => function ($q) {
+                    $q->where('reaction', 'like');
+                },
+                'reactions as dislikes' => function ($q) {
+                    $q->where('reaction', 'dislike');
+                },
+            ]);
 
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {
@@ -26,7 +34,24 @@ class PostController extends Controller
             });
         }
 
-        $posts =$query->latest()->paginate(10);
+        if($request->has('author')){
+            $query->where('user_id', $request->author);
+        }
+
+        if($request->has('sort')){
+            $sortField = $request->sort;
+            $sortOrder = $request->get('order' , 'desc');
+
+            if(in_array($sortField, ['created_at', 'likes' , 'dislikes'])){
+                $query->orderBy($sortField, $sortOrder);
+            }
+        }else{
+            $query->latest();
+        }
+
+        $posts =$query->paginate($request->get('per_page', 10));
+
+
         if ($posts->isEmpty() && $search) {
             return response()->json([
                 'massage' => 'No posts found',
