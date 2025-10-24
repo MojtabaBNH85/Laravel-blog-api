@@ -8,8 +8,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Traits\ApiResponseTrait;
 class AuthController extends Controller
 {
+    use ApiResponseTrait;
     public function register(Request $request)
     {
         $validate = $request->validate([
@@ -36,10 +38,8 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email' , $validate['email'])->first();
-        if (!$user || !Hash::check($validate['password'] , $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The information entered is incorrect.'],
-            ]);
+        if (!$user || !Hash::check($validate['password'] , $user->password)){
+            $this->errorResponse('the provided credentials are incorrect' , 'Credentials does not match' , 404);
         }
 
         $token = $user->createToken('api_token')->plainTextToken;
@@ -50,6 +50,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out successfully']);
+        return $this->successResponse(massage:  'Logged out successfully' , status: 200);
     }
 }

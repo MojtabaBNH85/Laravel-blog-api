@@ -6,15 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\ApiResponseTrait;
+use function Symfony\Component\String\s;
 
 class UserController extends Controller
 {
+    use ApiResponseTrait;
     public function show(Request $request )
     {
-        return response()->json([
-            'user' => new UserResource($request->user()->loadCount('posts')),
-            'message' => 'User received successfully'
-        ]);
+        return  $this->successResponse(
+            new UserResource($request->user()->loadCount('posts')),
+            'User received successfully',
+            200
+        );
     }
 
     public function update(Request $request)
@@ -37,10 +41,7 @@ class UserController extends Controller
 
         $user->update($validate);
 
-        return response()->json([
-            'user' => new UserResource($user),
-            'message' => 'User updated successfully'
-        ]);
+        return $this->successResponse(new UserResource($user), 'User updated successfully', 200);
     }
 
     public function destroy(Request $request)
@@ -52,21 +53,22 @@ class UserController extends Controller
         }
 
         $user->delete();
-        return response()->json(['message' => 'User deleted successfully']);
+        return $this->successResponse(massage: 'User deleted successfully' , status: 200);
     }
 
     public function destroyAvatar(Request $request){
         $user = $request->user();
 
         if(!$user->avatar){
-            return response()->json(['message' => 'User doesn\'t have avatar'],404);
+            return $this->errorResponse(massage: 'User doesn\'t have avatar' , status: 404);
         }
         Storage::disk('public')->delete($user->avatar);
         $user->update(['avatar' => null]);
-        return response()->json([
-            'user' => new UserResource($user->fresh()),
-            'message' => 'User avatar deleted successfully'
-        ]);
+        return $this->successResponse(
+            new UserResource($user->fresh()),
+            'User avatar deleted successfully',
+            200
+        );
 
     }
 }

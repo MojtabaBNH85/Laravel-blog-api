@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
-
+use App\Traits\ApiResponseTrait;
 class ReactionController extends Controller
 {
+    use ApiResponseTrait;
     public function react(Request $request , Post $post)
     {
         $validated = $request->validate([
@@ -22,20 +23,20 @@ class ReactionController extends Controller
             $currentReaction = $existing->pivot->reaction;
             if ($validated['reaction'] === $currentReaction) {
                 $user->reactedPosts()->detach($post->id);
-                return response()->json(['message' => 'react removed'], 200);
+                return $this->successResponse( massage: 'react removed', status: 200);
             }
 
             $user->reactedPosts()->updateExistingPivot($post->id, [
                 'reaction' => $validated['reaction'],
             ]);
 
-            return response()->json(['message' => 'Reaction updated']);
+            return $this->successResponse (massage: 'Reaction updated', status: 200);
         }
         $user->reactedPosts()->syncWithoutDetaching([
             $post->id => ['reaction' => $validated['reaction']]
         ]);
 
-        return response()->json(['message' => 'Reacted']);
+        return $this->successResponse(massage:  'Reacted' , status: 200);
     }
 
     public function summary(Post $post)

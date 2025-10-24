@@ -8,19 +8,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponseTrait;
 
 class CommentController extends Controller
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests , ApiResponseTrait;
     /**
      * Display a listing of the resource.
      */
     public function index(Post $post)
     {
-        return response()->json([
-            'comments' => CommentResource::collection($post->comments->load('user')),
-            'message' => 'Comments retrieved successfully'
-        ] , 200);
+        return $this->successResponse(
+            CommentResource::collection($post->comments->load('user')),
+            'Comments retrieved successfully',
+          200);
     }
 
     /**
@@ -36,7 +37,7 @@ class CommentController extends Controller
         ]);
 
 
-        return response()->json(['comment' => new CommentResource($comment->load('user')) , 'message' => 'Comment successfully posted.'], 201);
+        return $this->successResponse( new CommentResource($comment->load('user')) ,  'Comment successfully posted.', 201);
     }
 
     /**
@@ -44,10 +45,7 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        return response()->json([
-            'comments' => new CommentResource($comment->load('user')),
-            'message' => 'Comment retrieved successfully'
-        ] , 200);
+        return $this->successResponse(new CommentResource($comment->load('user')), 'Comment retrieved successfully', 200);
     }
 
     /**
@@ -63,7 +61,7 @@ class CommentController extends Controller
 
         $UpdatedComment = $comment->update($validated);
 
-        return response()->json(['comment' => new CommentResource($UpdatedComment->load('user')) , 'message' => 'Comment updated successfully.'], 200);
+        return $this->successResponse( CommentResource($UpdatedComment->load('user')) , 'Comment updated successfully.' , 200);
 
     }
 
@@ -75,6 +73,6 @@ class CommentController extends Controller
         $this->authorize('delete', $comment);
 
         $comment->delete();
-        return response()->json(['message' => 'Comment deleted successfully.'], 200);
+        return $this->successResponse(massage: 'Comment deleted successfully.', status:  200);
     }
 }

@@ -8,10 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use App\Traits\ApiResponseTrait;
 class PostController extends Controller
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests , ApiResponseTrait;
     /**
      * Display a listing of the resource.
      */
@@ -53,12 +53,9 @@ class PostController extends Controller
 
 
         if ($posts->isEmpty() && $search) {
-            return response()->json([
-                'massage' => 'No posts found',
-                'data' => []
-            ] , 404);
+            return $this->errorResponse('no posts found', [] , 404);
         }
-        return response()->json(['posts' => PostResource::collection($posts) , 'message' => 'Posts received successfully.'], 200);
+        return $this->successResponse(PostResource::collection($posts) , 'Posts received successfully.', 200);
     }
 
     /**
@@ -84,7 +81,7 @@ class PostController extends Controller
            "image" => $path,
         ]);
 
-        return response()->json(['post' => new PostResource($post), 'message' => 'Post created successfully.'], 200);
+        return $this->successResponse( new PostResource($post), 'Post created successfully.', 200);
     }
 
     /**
@@ -92,7 +89,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return response()->json(['post' => new PostResource($post), 'message' => 'Post received successfully.'], 200);
+        return $this->successResponse(new PostResource($post),  'Post received successfully.' , 200);
     }
 
     /**
@@ -119,7 +116,7 @@ class PostController extends Controller
 
         $post->update($validated);
 
-        return response()->json(['post' => new PostResource($post->fresh()), 'message' => 'Post updated successfully.'], 200);
+        return $this->successResponse(new PostResource($post->fresh()), 'Post updated successfully.', 200);
 
     }
 
@@ -135,6 +132,6 @@ class PostController extends Controller
         }
 
         $post->delete();
-        return response()->json(['message' => 'Post deleted successfully.'], 200);
+        return $this->successResponse(massage: 'Post deleted successfully.' , status: 200);
     }
 }
