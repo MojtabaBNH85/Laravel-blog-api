@@ -18,7 +18,7 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'body' => $this->body,
+            'content' => $this->content,
             'image_url' => $this->image ? asset('storage/' , $this->image) : null,
             'author' => new UserResource($this->whenLoaded('user')),
             'likes' => $this->likes ?? 0,
