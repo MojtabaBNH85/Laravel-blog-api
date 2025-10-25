@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\CommentCollection;
 use App\Http\Resources\CommentResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
@@ -19,7 +20,7 @@ class CommentController extends Controller
     public function index(Post $post)
     {
         return $this->successResponse(
-            CommentResource::collection($post->comments->load('user')),
+            new CommentCollection($post->comments()->with('user')->paginate(10)),
             'Comments retrieved successfully',
           200);
     }

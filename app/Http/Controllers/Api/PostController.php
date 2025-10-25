@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
@@ -55,7 +56,7 @@ class PostController extends Controller
         if ($posts->isEmpty() && $search) {
             return $this->errorResponse('no posts found', [] , 404);
         }
-        return $this->successResponse(PostResource::collection($posts) , 'Posts received successfully.', 200);
+        return $this->successResponse(new PostCollection($posts) , 'Posts received successfully.', 200);
     }
 
     /**
