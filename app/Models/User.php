@@ -26,6 +26,8 @@ class User extends Authenticatable
         'password',
     ];
 
+    protected $avatar;
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -65,7 +67,7 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function getAvatarUrlAttribute()
+    public function getAvatarAttribute()
     {
         return $this->avatar ? asset('storage/' . $this->avatar) : null;
     }
