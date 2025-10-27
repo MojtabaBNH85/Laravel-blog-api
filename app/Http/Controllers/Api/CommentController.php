@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\CommentCollection;
 use App\Http\Resources\CommentResource;
+use App\Notifications\CommentNotification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
@@ -37,6 +38,11 @@ class CommentController extends Controller
             'body' => $validated['body']
         ]);
 
+        $postOwner = $comment->post->user;
+
+        if ($postOwner->id !== auth()->id()) {
+            $postOwner->notify(new CommentNotification($comment));
+        }
 
         return $this->successResponse( new CommentResource($comment->load('user')) ,  'Comment successfully posted.', 201);
     }

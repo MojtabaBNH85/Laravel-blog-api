@@ -71,4 +71,12 @@ class UserController extends Controller
         );
 
     }
+
+    public function notifications(){
+        $user = auth()->user();
+        return $this->successResponse([
+            'notifications' => $user->notifications,
+            'unread_count' => $user->unreadNotifications()->count(),
+        ]);
+    }
 }

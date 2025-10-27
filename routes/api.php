@@ -36,4 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [UserController::class, 'update']);
     Route::delete('/profile', [UserController::class, 'destroy']);
     Route::delete('/profile/avatar', [UserController::class, 'destroyAvatar']);
+
+    //notification
+    Route::get('/notifications', [UserController::class, 'notifications']);
 });
