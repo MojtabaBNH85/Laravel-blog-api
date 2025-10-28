@@ -55,7 +55,7 @@ class CommentNotification extends Notification
             'comment_body' => $this->comment->body,
             'from_user' => [
                 'id' => $this->comment->user_id,
-                'name' => $this->comment->user_name
+                'name' => $this->comment->user->name
             ]
         ];
     }
