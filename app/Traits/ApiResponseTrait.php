@@ -4,18 +4,18 @@ namespace App\Traits;
 
 trait ApiResponseTrait
 {
-    public function successResponse($data = null , $massage = 'Success' , $status = 200){
+    public function successResponse($data = null , $message = 'Success' , $status = 200){
         return response()->json([
             'status' => 'success',
             'data' => $data,
-            'massage' => $massage,
+            'message' => $message,
         ] , $status);
     }
 
-    public function errorResponse($massage = 'Error' , $error = [] ,$status = 400){
+    public function errorResponse($message = 'Error' , $error = [] ,$status = 400){
         return response()->json([
             'status' => 'error',
-            'massage' => $massage,
+            'message' => $message,
             'error' => $error,
         ] , $status);
     }

@@ -27,7 +27,7 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('api_token')->plainTextToken;
-        return response()->json(['user' => new UserResource($user) , 'token' => $token , 'massage' => 'login success']);
+        return response()->json(['user' => new UserResource($user) , 'token' => $token , 'message' => 'login success']);
     }
 
     public function login(Request $request)
@@ -43,13 +43,13 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('api_token')->plainTextToken;
-        return response()->json(['user' => new UserResource($user) , 'token' => $token , 'massage' => 'login success']);
+        return response()->json(['user' => new UserResource($user) , 'token' => $token , 'message' => 'login success']);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->successResponse(massage:  'Logged out successfully' , status: 200);
+        return $this->successResponse(message:  'Logged out successfully' , status: 200);
     }
 }

@@ -53,14 +53,14 @@ class UserController extends Controller
         }
 
         $user->delete();
-        return $this->successResponse(massage: 'User deleted successfully' , status: 200);
+        return $this->successResponse(message: 'User deleted successfully' , status: 200);
     }
 
     public function destroyAvatar(Request $request){
         $user = $request->user();
 
         if(!$user->avatar){
-            return $this->errorResponse(massage: 'User doesn\'t have avatar' , status: 404);
+            return $this->errorResponse(message: 'User doesn\'t have avatar' , status: 404);
         }
         Storage::disk('public')->delete($user->avatar);
         $user->update(['avatar' => null]);

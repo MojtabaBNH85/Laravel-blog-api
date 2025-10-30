@@ -133,6 +133,6 @@ class PostController extends Controller
         }
 
         $post->delete();
-        return $this->successResponse(massage: 'Post deleted successfully.' , status: 200);
+        return $this->successResponse(message: 'Post deleted successfully.' , status: 200);
     }
 }

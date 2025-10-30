@@ -29,14 +29,14 @@ class NotificationController extends Controller
 
         $notification->markAsRead();
 
-        return $this->successResponse(massage: "Notifications Mark as Read");
+        return $this->successResponse(message: "Notifications Mark as Read");
     }
 
     public function markAllAsRead(Request $request)
     {
         $request->user()->unreadNotifications->markAsRead();
 
-        return $this->successResponse(massage: "All notifications marked as read" , status: 200);
+        return $this->successResponse(message: "All notifications marked as read" , status: 200);
     }
 
     public function destroy(Request $request , $id){
@@ -47,6 +47,6 @@ class NotificationController extends Controller
 
         $notification->delete();
 
-        return $this->successResponse(massage: "Notifications Deleted Successfully" , status: 200);
+        return $this->successResponse(message: "Notifications Deleted Successfully" , status: 200);
     }
 }

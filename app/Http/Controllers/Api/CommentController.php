@@ -80,6 +80,6 @@ class CommentController extends Controller
         $this->authorize('delete', $comment);
 
         $comment->delete();
-        return $this->successResponse(massage: 'Comment deleted successfully.', status:  200);
+        return $this->successResponse(message: 'Comment deleted successfully.', status:  200);
     }
 }

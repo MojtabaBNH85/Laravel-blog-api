@@ -23,20 +23,20 @@ class ReactionController extends Controller
             $currentReaction = $existing->pivot->reaction;
             if ($validated['reaction'] === $currentReaction) {
                 $user->reactedPosts()->detach($post->id);
-                return $this->successResponse( massage: 'react removed', status: 200);
+                return $this->successResponse( message: 'react removed', status: 200);
             }
 
             $user->reactedPosts()->updateExistingPivot($post->id, [
                 'reaction' => $validated['reaction'],
             ]);
 
-            return $this->successResponse (massage: 'Reaction updated', status: 200);
+            return $this->successResponse (message: 'Reaction updated', status: 200);
         }
         $user->reactedPosts()->syncWithoutDetaching([
             $post->id => ['reaction' => $validated['reaction']]
         ]);
 
-        return $this->successResponse(massage:  'Reacted' , status: 200);
+        return $this->successResponse(message:  'Reacted' , status: 200);
     }
 
     public function summary(Post $post)
